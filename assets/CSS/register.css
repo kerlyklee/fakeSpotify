@@ -15,7 +15,7 @@ html, body {
 }
 #loginContainer * {
     color: #fff;
-    font-family: "Helvetica Neve", "Helvetica", "Arial", "sans-serlf";
+    font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
     font-weight: normal;
     line-height: 1em;
     box-sizing: border-box;
@@ -114,7 +114,7 @@ html, body {
     display: table-cell;
 }
 #loginSideText h1 {
-    color:  rgb(97, 158, 121);  /*#cfe0c6;*/
+    color:  #07d159;
     font-size: 40px;
     font-weight: bold;
 }
@@ -132,7 +132,7 @@ html, body {
     background-size: 17px;
 }
 #inputContainer .errorMessage {
-    color: rgb(97, 158, 121); 
+    color: #07d159; 
     font-size: 12px;
     display: block;
 }
