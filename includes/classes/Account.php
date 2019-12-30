@@ -1,8 +1,10 @@
 <?php
 class Account {
+    private $connection;
     private $errorArray;
 
-    public function __construct() {
+    public function __construct($connection) {
+        $this->connection = $connection;
         $this->errorArray = array();
     }
     public function register($fn, $ln, $un, $em, $em2, $pas, $ckpas) {
@@ -14,7 +16,7 @@ class Account {
 
         if(empty($this->errorArray)){
             //insert data into database
-            return true;
+            return $this->insertUserDetails($fn, $ln, $un, $em, $pas);
         }
         else {
             return false;
@@ -27,6 +29,17 @@ class Account {
 
         }
         return "<span class='errorMessage'>$error</span>";
+
+    }
+    private function insertUserDetails($fn, $ln, $un, $em, $pas) {
+        $encryptedPw = md5($pas);
+        $profilePicture ="assets/images/profile-pics/standard.png";
+        $date = date("Y-m-d");
+  
+      
+        $result = mysqli_query($this->connection, "INSERT INTO users VALUES ('', '$un', '$fn', '$ln', '$em', '$encryptedPw', '$date', '$profilePicture')");
+        
+        return $result;
 
     }
     private function validateFirstname($fn) {
@@ -47,7 +60,11 @@ class Account {
             array_push($this->errorArray, Constants::$userNameLenght);
             return;
         }
-        //TODO: check that doesnt exist
+        $checkUsernameQuery = mysqli_query($this->connection, "SELECT username FROM users WHERE username='$un'");
+        if(mysqli_num_rows($checkUsernameQuery) != 0) {
+            array_push($this->errorArray, Constants::$usernameExists);
+            return;
+        }
     
     }
     private function validateEmails($em, $em2) {
@@ -59,7 +76,11 @@ class Account {
             array_push($this->errorArray, Constants::$emailNotValid);
             return;
         }
-        //check that email dont exist
+        $checkEmailQuery = mysqli_query($this->connection, "SELECT email FROM users WHERE email='$em'");
+        if(mysqli_num_rows($checkEmailQuery) != 0) {
+            array_push($this->errorArray, Constants::$emailExists);
+            return;
+        }
 
         
     }
@@ -75,6 +96,21 @@ class Account {
             array_push($this->errorArray, Constants::$passwordLenght);
         }
         
+    }
+    public function login($lun, $lpas){
+        $pas = md5($lpas);
+        $logInQuery = mysqli_query($this->connection, "SELECT * FROM users WHERE username='$lun' AND password='$pas'");
+        if(mysqli_num_rows($logInQuery) == 1) {
+            return true;
+        }
+        else {
+            array_push($this->errorArray, Constants::$loginFailed);
+            return false;
+
+
+        }
+           
+
     }
 }
 ?>

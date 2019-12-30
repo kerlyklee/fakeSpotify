@@ -8,6 +8,8 @@ class Constants {
     public static $lastNameLenght = "Sorry, but your last name is too long for out database, could you please use a shorter name";
     public static $passwordsNotAlphanumeric = "Sorry, but password can only contain numbers and letters";
     public static $passwordLenght = "Sorry, but password has to be between 8 to 250 characters";
-
+    public static $usernameExists = "Sorry, this username is taken, please choose a diffrent username";
+    public static $emailExists = "Sorry, account with this email alredy exists!";
+    public static $loginFailed = "Your username or password was incorrect";
 }
 ?>

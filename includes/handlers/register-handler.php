@@ -31,7 +31,8 @@ if(isset($_POST['registerButton'])) {
     $checkPassword = sanitizePassword($_POST['checkPassword']);
 
     $noErrors = $account->register($firstName, $lastName, $regUsername, $email, $checkEmail, $regPassword, $checkPassword);
-    if($noErrors) {
+    if($noErrors  == true) {
+        $_SESSION['userLoggedIn'] = $regUsername;
        header("Location: index.php");
     }
 
