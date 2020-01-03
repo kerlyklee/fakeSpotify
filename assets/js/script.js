@@ -25,6 +25,7 @@ function formatTime(seconds) {
 
         return minutes + ":" + extraZero + seconds;
 }
+
 function updateTimeProgressBar(audio) {
     $(".progressTime.curent").text(formatTime(audio.currentTime));
     $(".progressTime.remaining").text(formatTime(audio.duration - audio.currentTime));
@@ -36,6 +37,9 @@ function updateTimeProgressBar(audio) {
 function updateVolumeProgressBar(audio) {
     var volume = audio.volume * 100;
     $(".volumeBar .progress").css("width", volume + "%");
+}
+function playFirstSong() {
+    setTrack(tempPlaylist[0], tempPlaylist, true);
 }
 function Audio() {
     this.currentlyPlaying;
