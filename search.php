@@ -18,7 +18,7 @@ else {
 <script>
 $(".searchInput").focus();
 $(function() {
-    var timer;
+    
     $(".searchInput").keyup(function(){
         clearTimeout(timer);
 
@@ -30,16 +30,18 @@ $(function() {
 })
 </script>
 
+<?php 
+    if($term == "") exit(); ?>
 
 
 <div class="tracklistContainer borderBottom">
 	<h2>Songs</h2>
     <ul class="trackList">
         <?php
-        $songsQuery = mysqli_query($connection, "SELECT id FROM songs WHERE title LIKE '$term%'");
+        $songsQuery = mysqli_query($connection, "SELECT id FROM songs WHERE title LIKE '$term%' LIMIT 10");
 
         if(mysqli_num_rows($songsQuery) == 0) {
-            echo "<span class='noResults' >No songs found matching" . $term . "</span>";
+            echo "<span class='noResults'>No songs found matching " . $term . "</span>";
         }
         $i = 1;
         $songIdArray = array();
@@ -61,7 +63,8 @@ $(function() {
                         <span class='artistName'> " . $albumArtist->getName() . "</span>
                     </div>
                     <div class='trackOptions'>
-                        <img class='optionsButton' src='assets/images/icons/more.png'>
+                        <input type='hidden' class='songId' value='" . $albumSong->getId() . "'>
+                        <img class='optionsButton' src='assets/images/icons/more.png' onclick='showOptionsMenu(this)'>
                     </div>
                     <div class='trackDuration'>
                         <span class='duration'>" . $albumSong->getDuration() . "</span>
@@ -79,28 +82,62 @@ $(function() {
     </ul>
 </div>
 
-<div class="artistContainer borderBottom">
-    <h2>Artitsts</h2>
-    <?php
-    $artistsQuery = mysqli_query($connection, "SELECT id FROM artists WHERE name LIKE '$term%'");
-    if(mysqli_num_rows($artistsQuery) == 0) {
-        echo "<span class='noResults' >No artists found matching" . $term . "</span>";
-    }
-    while($row = mysqli_fetch_array($artistsQuery)) {
-        $artistFound = new Artist($connection, $row['id']);
+<div class="artistsContainer borderBottom">
 
-        echo "<div class='searchResultRow>
-                <div class='artistName'>
-                    <span role='link' tabindex='0' onclick='openPage(\"artist.php?id=" . $artistFound->getId() ."\"'>
-                     "
-                     . $artistFound->getName() .
-                     "   
-                    </span>
-                
-                </div>
-        
-            </div>";
-    }
-    ?>
+	<h2>Artists</h2>
+
+	<?php
+	$artistsQuery = mysqli_query($connection, "SELECT id FROM artists WHERE name LIKE '$term%' LIMIT 10");
+	
+	if(mysqli_num_rows($artistsQuery) == 0) {
+		echo "<span class='noResults'>No artists found matching " . $term . "</span>";
+	}
+
+	while($row = mysqli_fetch_array($artistsQuery)) {
+		$artistFound = new Artist($connection, $row['id']);
+
+		echo "<div class='searchResultRow'>
+				<div class='artistName'>
+
+					<span role='link' tabindex='0' onclick='openPage(\"artist.php?id=" . $artistFound->getId() ."\")'>
+					"
+					. $artistFound->getName() .
+					"
+					</span>
+
+				</div>
+
+			</div>";
+
+	}
+
+
+	?>
 
 </div>
+<div class="gridViewContainer">
+	<h2>Albums</h2>
+    <?php   
+        $albumQuery = mysqli_query($connection, "SELECT * FROM albums WHERE title LIKE '$term%' LIMIT 10");
+        if(mysqli_num_rows($albumQuery) == 0) {
+            echo "<span class='noResults'>No albums found matching " . $term . "</span>";
+        }
+        
+        while($row = mysqli_fetch_array($albumQuery)) {
+            echo "<div class='gridViewItem'> 
+            <span  role='link' tabindex='0' onclick='openPage(\"album.php?id=" . $row['id'] . "\")'>
+                <img src='" . $row['artworkPath'] . " '>
+                    <div class='gridViewInfo'> 
+                    " . $row['title'] . "
+                        
+                    </div>
+                </span>
+                </div>";
+        }
+    ?>
+</div>
+<nav class="optionsMenu">
+	<input type="hidden" class="songId">
+	<?php echo Playlist::getPlaylistsDropdown($connection, $userLoggedIn->getUsername()); ?>
+
+</nav>

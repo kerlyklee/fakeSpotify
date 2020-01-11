@@ -139,15 +139,15 @@ function setTrack(trackId, newPlaylist, play) {
         $(".trackName span").text(track.title);
         $.post("includes/handlers/ajax/getArtistJson.php", { artistId: track.artist}, function(data) {
             var artist = JSON.parse(data);
-            $(".trackArtist span").text(artist.name);
-            $(".trackArtist span").attr("onclick", "openPage('artist.php?id=" + artist.id + "')");
+            $(".trackInfo .trackArtist span").text(artist.name);
+            $(".trackInfo .trackArtist span").attr("onclick", "openPage('artist.php?id=" + artist.id + "')");
             
         });
         $.post("includes/handlers/ajax/getAlbumJson.php", { albumId: track.album}, function(data) {
             var album = JSON.parse(data);
-            $(".albumLink img").attr("src", album.artworkPath);
-            $(".albumLink img").attr("onclick", "openPage('album.php?id=" + album.id + "')");
-            $(".trackName span").attr("onclick", "openPage('album.php?id=" + album.id + "')");
+            $(".content .albumLink img").attr("src", album.artworkPath);
+            $(".content .albumLink img").attr("onclick", "openPage('album.php?id=" + album.id + "')");
+            $(".trackInfo .trackName span").attr("onclick", "openPage('album.php?id=" + album.id + "')");
             
         });
         audioElement.setTrack(track);
